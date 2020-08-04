@@ -171,9 +171,9 @@ void ExternalTablesHandler::handlePart(const Poco::Net::MessageHeader & header, 
 
     /// Write data
     auto sink = std::make_shared<SinkToOutputStream>(std::move(output));
-    connect(data->pipe->getPort(), sink->getPort());
+    connect(*data->pipe->getOutputPort(0), sink->getPort());
 
-    auto processors = std::move(*data->pipe).detachProcessors();
+    auto processors = Pipe::detachProcessors(std::move(*data->pipe));
     processors.push_back(std::move(sink));
 
     auto executor = std::make_shared<PipelineExecutor>(processors);
