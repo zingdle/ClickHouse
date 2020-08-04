@@ -265,7 +265,9 @@ Pipe StorageBuffer::read(
       * then sources from the buffers must also be wrapped in the processing pipeline before the same stage.
       */
     if (processed_stage > QueryProcessingStage::FetchColumns)
-        pipe_from_buffers = InterpreterSelectQuery(query_info.query, context, std::move(pipe_from_buffers), SelectQueryOptions(processed_stage)).execute().pipeline.getPipe();
+        pipe_from_buffers = QueryPipeline::getPipe(
+                InterpreterSelectQuery(query_info.query, context, std::move(pipe_from_buffers),
+                                               SelectQueryOptions(processed_stage)).execute().pipeline);
 
     if (query_info.prewhere_info)
     {

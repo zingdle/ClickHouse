@@ -245,10 +245,10 @@ Pipe StorageMerge::createSources(
 
     if (!storage)
     {
-        pipe = InterpreterSelectQuery(
+        pipe = QueryPipeline::getPipe(InterpreterSelectQuery(
             modified_query_info.query, *modified_context,
             std::make_shared<OneBlockInputStream>(header),
-            SelectQueryOptions(processed_stage).analyze()).execute().pipeline.getPipe();
+            SelectQueryOptions(processed_stage).analyze()).execute().pipeline);
 
         pipe.addInterpreterContext(modified_context);
         return pipe;
@@ -275,13 +275,13 @@ Pipe StorageMerge::createSources(
         InterpreterSelectQuery interpreter{modified_query_info.query, *modified_context, SelectQueryOptions(processed_stage)};
 
 
-        pipe = interpreter.execute().pipeline.getPipe();
+        pipe = QueryPipeline::getPipe(interpreter.execute().pipeline);
 
         /** Materialization is needed, since from distributed storage the constants come materialized.
           * If you do not do this, different types (Const and non-Const) columns will be produced in different threads,
           * And this is not allowed, since all code is based on the assumption that in the block stream all types are the same.
           */
-        pipe.addSimpleTransform([](const Block & header) { return std::make_shared<MaterializingTransform>(header); });
+        pipe.addSimpleTransform([](const Block & stream_header) { return std::make_shared<MaterializingTransform>(stream_header); });
     }
 
     if (!pipe.empty())
@@ -291,10 +291,10 @@ Pipe StorageMerge::createSources(
 
         if (has_table_virtual_column)
         {
-            pipe.addSimpleTransform([name = table_name](const Block & header)
+            pipe.addSimpleTransform([name = table_name](const Block & stream_header)
             {
                 return std::make_shared<AddingConstColumnTransform<String>>(
-                    header, std::make_shared<DataTypeString>(), name, "_table");
+                        stream_header, std::make_shared<DataTypeString>(), name, "_table");
             });
         }
 
@@ -440,9 +440,9 @@ void StorageMerge::convertingSourceStream(
     QueryProcessingStage::Enum processed_stage)
 {
     Block before_block_header = pipe.getHeader();
-    pipe.addSimpleTransform([&before_block_header](const Block & header)
+    pipe.addSimpleTransform([&before_block_header](const Block & stream_header)
     {
-        return std::make_shared<ConvertingTransform>(before_block_header, header, ConvertingTransform::MatchColumnsMode::Name);
+        return std::make_shared<ConvertingTransform>(before_block_header, stream_header, ConvertingTransform::MatchColumnsMode::Name);
     });
 
     auto where_expression = query->as<ASTSelectQuery>()->where();
