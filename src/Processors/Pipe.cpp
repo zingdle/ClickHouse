@@ -619,7 +619,8 @@ void Pipe::transform(const Transformer & transformer)
         set.emplace(&port->getProcessor());
     }
 
-    OutputPortRawPtrs new_output_ports;
+    output_ports.clear();
+
     for (const auto & processor : new_processors)
     {
         for (const auto & port : processor->getInputs())
@@ -639,7 +640,7 @@ void Pipe::transform(const Transformer & transformer)
         {
             if (!port.isConnected())
             {
-                new_output_ports.push_back(&port);
+                output_ports.push_back(&port);
                 continue;
             }
 
