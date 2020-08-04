@@ -1290,9 +1290,9 @@ Pipe MergeTreeDataSelectExecutor::spreadMarkRangesAmongStreamsFinal(
             key_columns.emplace_back(desc.column_number);
     }
 
-    pipe.addSimpleTransform([&](const Block & header)
+    pipe.addSimpleTransform([&](const Block & stream_header)
     {
-        return std::make_shared<AddingSelectorTransform>(header, num_streams, key_columns);
+        return std::make_shared<AddingSelectorTransform>(stream_header, num_streams, key_columns);
     });
 
     pipe.transform([&](OutputPortRawPtrs ports)
