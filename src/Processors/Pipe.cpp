@@ -292,7 +292,7 @@ Pipe Pipe::unitePipes(Pipes pipes, Processors * collected_processors)
 void Pipe::addSource(ProcessorPtr source)
 {
     checkSource(*source);
-    const auto & source_header = output_ports.front()->getHeader();
+    const auto & source_header = source->getOutputs().front().getHeader();
 
     if (output_ports.empty())
         header = source_header;
