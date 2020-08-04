@@ -294,7 +294,7 @@ Pipe StorageSystemColumns::read(
         if (!block_to_filter.rows())
         {
             pipes.emplace_back(std::make_shared<NullSource>(header));
-            return pipes;
+            return Pipe::unitePipes(std::move(pipes));
         }
 
         ColumnPtr & database_column = block_to_filter.getByName("database").column;
@@ -333,7 +333,7 @@ Pipe StorageSystemColumns::read(
     if (!block_to_filter.rows())
     {
         pipes.emplace_back(std::make_shared<NullSource>(header));
-        return pipes;
+        return Pipe::unitePipes(std::move(pipes));
     }
 
     ColumnPtr filtered_database_column = block_to_filter.getByName("database").column;
