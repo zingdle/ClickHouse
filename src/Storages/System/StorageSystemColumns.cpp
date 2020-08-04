@@ -240,7 +240,7 @@ private:
 };
 
 
-Pipes StorageSystemColumns::read(
+Pipe StorageSystemColumns::read(
     const Names & column_names,
     const StorageMetadataPtr & metadata_snapshot,
     const SelectQueryInfo & query_info,
@@ -344,7 +344,7 @@ Pipes StorageSystemColumns::read(
             std::move(filtered_database_column), std::move(filtered_table_column),
             std::move(storages), context));
 
-    return pipes;
+    return Pipe::unitePipes(std::move(pipes));
 }
 
 }
