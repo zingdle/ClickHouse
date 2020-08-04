@@ -24,26 +24,12 @@ static void checkSingleInput(const IProcessor & transform)
                         toString(transform.getInputs().size()) + " inputs.", ErrorCodes::LOGICAL_ERROR);
 }
 
-static void checkMultipleInputs(const IProcessor & transform, size_t num_inputs)
-{
-    if (transform.getInputs().size() != num_inputs)
-        throw Exception("Processor for pipe should have " + toString(num_inputs) + " inputs, "
-                        "but " + transform.getName() + " has " +
-                        toString(transform.getInputs().size()) + " inputs.", ErrorCodes::LOGICAL_ERROR);
-}
-
 static void checkSingleOutput(const IProcessor & transform)
 {
     if (transform.getOutputs().size() != 1)
         throw Exception("Processor for pipe should have single output, "
                         "but " + transform.getName() + " has " +
                         toString(transform.getOutputs().size()) + " outputs.", ErrorCodes::LOGICAL_ERROR);
-}
-
-static void checkSimpleTransform(const IProcessor & transform)
-{
-    checkSingleInput(transform);
-    checkSingleOutput(transform);
 }
 
 static void checkSource(const IProcessor & source)
