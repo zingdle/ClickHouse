@@ -160,7 +160,7 @@ Pipe::Pipe(ProcessorPtr source)
         checkSource(*source);
 
     if (collected_processors)
-        collected_processors->emplace_back(source.get());
+        collected_processors->emplace_back(source);
 
     output_ports.push_back(&source->getOutputs().front());
     header = output_ports.front()->getHeader();
@@ -218,7 +218,7 @@ Pipe::Pipe(Processors processors_) : processors(std::move(processors_))
 
     if (collected_processors)
         for (const auto & processor : processors)
-            collected_processors->emplace_back(processor.get());
+            collected_processors->emplace_back(processor);
 }
 
 static Pipes removeEmptyPipes(Pipes pipes)
@@ -300,7 +300,7 @@ void Pipe::addSource(ProcessorPtr source)
         assertBlocksHaveEqualStructure(header, source_header, "Pipes");
 
     if (collected_processors)
-        collected_processors->emplace_back(source.get());
+        collected_processors->emplace_back(source);
 
     output_ports.push_back(&source->getOutputs().front());
     processors.emplace_back(std::move(source));
@@ -322,7 +322,7 @@ void Pipe::addTotalsSource(ProcessorPtr source)
     assertBlocksHaveEqualStructure(header, source_header, "Pipes");
 
     if (collected_processors)
-        collected_processors->emplace_back(source.get());
+        collected_processors->emplace_back(source);
 
     totals_port = &source->getOutputs().front();
     processors.emplace_back(std::move(source));
@@ -342,7 +342,7 @@ void Pipe::addExtremesSource(ProcessorPtr source)
     assertBlocksHaveEqualStructure(header, source_header, "Pipes");
 
     if (collected_processors)
-        collected_processors->emplace_back(source.get());
+        collected_processors->emplace_back(source);
 
     extremes_port = &source->getOutputs().front();
     processors.emplace_back(std::move(source));
@@ -357,7 +357,7 @@ static void dropPort(OutputPort *& port, Processors & processors, Processors * c
     connect(*port, null_sink->getPort());
 
     if (collected_processors)
-        collected_processors->emplace_back(null_sink.get());
+        collected_processors->emplace_back(null_sink);
 
     processors.emplace_back(std::move(null_sink));
     port = nullptr;
@@ -450,7 +450,7 @@ void Pipe::addTransform(ProcessorPtr transform, OutputPort * totals, OutputPort 
         assertBlocksHaveEqualStructure(header, extremes_port->getHeader(), "Pipes");
 
     if (collected_processors)
-        collected_processors->emplace_back(transform.get());
+        collected_processors->emplace_back(transform);
 
     processors.emplace_back(std::move(transform));
 
@@ -498,7 +498,7 @@ void Pipe::addSimpleTransform(const ProcessorGetterWithStreamKind & getter)
             port = &transform->getOutputs().front();
 
             if (collected_processors)
-                collected_processors->emplace_back(transform.get());
+                collected_processors->emplace_back(transform);
 
             processors.emplace_back(std::move(transform));
         }
@@ -586,7 +586,7 @@ void Pipe::setOutputFormat(ProcessorPtr output)
         addExtremesSource(std::make_shared<NullSource>(extremes.getHeader()));
 
     if (collected_processors)
-        collected_processors->emplace_back(output.get());
+        collected_processors->emplace_back(output);
 
     processors.emplace_back(std::move(output));
 
@@ -668,7 +668,7 @@ void Pipe::transform(const Transformer & transformer)
     if (collected_processors)
     {
         for (const auto & processor : processors)
-            collected_processors->emplace_back(processor.get());
+            collected_processors->emplace_back(processor);
     }
 
     processors.insert(processors.end(), new_processors.begin(), new_processors.end());
