@@ -139,7 +139,7 @@ Pipe StorageSystemReplicas::read(
         VirtualColumnUtils::filterBlockWithQuery(query_info.query, filtered_block, context);
 
         if (!filtered_block.rows())
-            return Pipes();
+            return {};
 
         col_database = filtered_block.getByName("database").column;
         col_table = filtered_block.getByName("table").column;
