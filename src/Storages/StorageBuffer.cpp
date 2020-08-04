@@ -221,10 +221,10 @@ Pipe StorageBuffer::read(
                     columns_intersection, destination_metadata_snapshot, query_info,
                     context, processed_stage, max_block_size, num_streams);
 
-                pipe_from_dst.addSimpleTransform([&](const Block & header)
+                pipe_from_dst.addSimpleTransform([&](const Block & stream_header)
                 {
-                    return std::make_shared<AddingMissedTransform>(
-                        header, header_after_adding_defaults, metadata_snapshot->getColumns().getDefaults(), context);
+                    return std::make_shared<AddingMissedTransform>(stream_header, header_after_adding_defaults,
+                        metadata_snapshot->getColumns().getDefaults(), context);
                 });
 
                 pipe_from_dst.addSimpleTransform([&](const Block & stream_header)
