@@ -16,22 +16,6 @@ namespace ErrorCodes
     extern const int LOGICAL_ERROR;
 }
 
-static void checkSingleInput(const IProcessor & transform)
-{
-    if (transform.getInputs().size() != 1)
-        throw Exception("Processor for pipe should have single input, "
-                        "but " + transform.getName() + " has " +
-                        toString(transform.getInputs().size()) + " inputs.", ErrorCodes::LOGICAL_ERROR);
-}
-
-static void checkSingleOutput(const IProcessor & transform)
-{
-    if (transform.getOutputs().size() != 1)
-        throw Exception("Processor for pipe should have single output, "
-                        "but " + transform.getName() + " has " +
-                        toString(transform.getOutputs().size()) + " outputs.", ErrorCodes::LOGICAL_ERROR);
-}
-
 static void checkSource(const IProcessor & source)
 {
     if (!source.getInputs().empty())
