@@ -57,7 +57,7 @@ StorageSystemReplicas::StorageSystemReplicas(const std::string & name_)
 }
 
 
-Pipes StorageSystemReplicas::read(
+Pipe StorageSystemReplicas::read(
     const Names & column_names,
     const StorageMetadataPtr & metadata_snapshot,
     const SelectQueryInfo & query_info,
@@ -202,9 +202,7 @@ Pipes StorageSystemReplicas::read(
     UInt64 num_rows = fin_columns.at(0)->size();
     Chunk chunk(std::move(fin_columns), num_rows);
 
-    Pipes pipes;
-    pipes.emplace_back(std::make_shared<SourceFromSingleChunk>(metadata_snapshot->getSampleBlock(), std::move(chunk)));
-    return pipes;
+    return Pipe(std::make_shared<SourceFromSingleChunk>(metadata_snapshot->getSampleBlock(), std::move(chunk)));
 }
 
 
