@@ -315,6 +315,8 @@ Pipe Pipe::unitePipes(Pipes pipes, Processors * collected_processors)
         for (; num_processors < res.processors.size(); ++num_processors)
             res.collected_processors->emplace_back(res.processors[num_processors]);
     }
+
+    return res;
 }
 
 void Pipe::addSource(ProcessorPtr source)
