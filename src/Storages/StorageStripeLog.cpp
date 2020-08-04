@@ -334,7 +334,7 @@ Pipe StorageStripeLog::read(
 
     /// We do not keep read lock directly at the time of reading, because we read ranges of data that do not change.
 
-    return Pipe::unitePipes(pipes);
+    return Pipe::unitePipes(std::move(pipes));
 }
 
 

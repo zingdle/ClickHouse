@@ -287,7 +287,10 @@ Pipe StorageBuffer::read(
         }
     }
 
-    return Pipe::unitePipes({std::move(pipe_from_dst), std::move(pipe_from_buffers)});
+    Pipes pipes;
+    pipes.emplace_back(std::move(pipe_from_dst));
+    pipes.emplace_back(std::move(pipe_from_buffers));
+    return Pipe::unitePipes(std::move(pipes));
 }
 
 
