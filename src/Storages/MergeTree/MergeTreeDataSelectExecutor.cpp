@@ -1122,7 +1122,7 @@ Pipe MergeTreeDataSelectExecutor::spreadMarkRangesAmongStreamsWithOrder(
 
         auto pipe = Pipe::unitePipes(std::move(pipes));
 
-        if (input_order_info->direction == 1)
+        if (input_order_info->direction != 1)
         {
             pipe.addSimpleTransform([](const Block & header)
             {
